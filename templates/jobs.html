@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Works log</h1>
+    <div class="row">
+        {% for item in jobs %}
+        <div class="col-8 col-offset-2">
+            <h2>Action # {{ item.id }}</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Leader</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col">Collaborators</th>
+                        <th scope="col">Finished</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ item.job }}</td>
+                        <td>{{ item.leader.name }} {{ item.leader.surname }}</td>
+                        <td>{{ item.work_size }} hours</td>
+                        <td>{{ item.collaborators }}</td>
+                        <td>{% if item.is_finished %}Yes{% else %}No{% endif %}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
