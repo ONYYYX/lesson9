@@ -30,5 +30,7 @@ class User(SqlAlchemyBase):
         default=datetime.datetime.now
     )
 
+    department_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('departments.id'))
+
     def __repr__(self):
         return f'<Colonist> {self.id} {self.surname} {self.name}'
