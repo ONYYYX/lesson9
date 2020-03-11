@@ -3,7 +3,7 @@ from sqlalchemy import orm
 from db.db_session import SqlAlchemyBase
 
 
-class Departments(SqlAlchemyBase):
+class Department(SqlAlchemyBase):
     __tablename__ = 'departments'
     id = sqlalchemy.Column(
         sqlalchemy.Integer,

@@ -7,8 +7,10 @@ for job in session.query(Jobs).all():
     if n > max_team:
         max_team = n
     jobs.append(job)
+tl = []
 for job in jobs:
     c = job.collaborators.split(', ')
     if len(c) >= max_team:
         user = session.query(User).filter(User.id == job.team_leader).first()
-        print(user.surname, user.name)
+        tl.append(f'{user.surname} {user.name}')
+print('\n'.join(set(tl)))
