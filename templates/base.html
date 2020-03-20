@@ -23,7 +23,7 @@
                             <a class="nav-link" href="/">Главная</a>
                         </li>
                         {% if current_user.is_authenticated %}
-                        <li class="nav-item">
+                        <li class="nav-item active ml-5">
                             <a class="nav-link" href="/logout">{{ current_user.name }}</a>
                         </li>
                         {% endif %}
