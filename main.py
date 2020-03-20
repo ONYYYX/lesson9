@@ -87,6 +87,22 @@ def jobs_edit(job_id):
     return render_template('jobs_add.html', title='Редактирование работы', form=form)
 
 
+@app.route('/jobs/delete/<int:job_id>', methods=['GET', 'POST'])
+@login_required
+def jobs_delete(job_id):
+    session = db_session.create_session()
+    if current_user.id == 1:
+        job = session.query(Jobs).filter(Jobs.id == job_id).first()
+    else:
+        job = session.query(Jobs).filter(Jobs.id == job_id, Jobs.leader == current_user).first()
+    if job:
+        session.delete(job)
+        session.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
