@@ -2,9 +2,10 @@ from flask import Flask, render_template, redirect
 from db import db_session
 from data.Jobs import Jobs
 from data.User import User
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms.register import RegisterForm
 from forms.login import LoginForm
+from forms.job import JobForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_skey_lol_lmao'
@@ -21,10 +22,31 @@ def load_user(user_id):
 
 
 @app.route('/')
+@app.route('/jobs')
 def index():
     session = db_session.create_session()
     jobs = session.query(Jobs)
     return render_template('jobs.html', jobs=jobs)
+
+
+@app.route('/jobs/create',  methods=['GET', 'POST'])
+@login_required
+def jobs_create():
+    form = JobForm()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        job = Jobs()
+        job.leader_id = form.leader_id.data
+        job.job = form.job.data
+        job.work_size = form.work_size.data
+        job.collaborators = form.collaborators.data
+        job.is_finished = form.is_finished.data
+        current_user.jobs.append(job)
+        session.merge(current_user)
+        session.commit()
+        return redirect('/')
+    return render_template('jobs_add.html', title='Добавление работы',
+                           form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])

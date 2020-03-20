@@ -1,5 +1,6 @@
 import datetime
 import sqlalchemy
+from sqlalchemy import orm
 from db.db_session import SqlAlchemyBase
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -31,6 +32,8 @@ class User(SqlAlchemyBase, UserMixin):
         sqlalchemy.DateTime,
         default=datetime.datetime.now
     )
+
+    jobs = orm.relation('Jobs', back_populates='leader')
 
     def __repr__(self):
         return f'<Colonist> {self.id} {self.surname} {self.name}'
