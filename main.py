@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, abort
 from db import db_session
 from data.Jobs import Jobs
 from data.User import User
@@ -41,12 +41,50 @@ def jobs_create():
         job.work_size = form.work_size.data
         job.collaborators = form.collaborators.data
         job.is_finished = form.is_finished.data
-        current_user.jobs.append(job)
+        user = session.query(User).filter(User.id == job.leader_id).first()
+        user.jobs.append(job)
         session.merge(current_user)
         session.commit()
         return redirect('/')
     return render_template('jobs_add.html', title='Добавление работы',
                            form=form)
+
+
+@app.route('/jobs/edit/<int:job_id>', methods=['GET', 'POST'])
+@login_required
+def jobs_edit(job_id):
+    form = JobForm()
+    if request.method == "GET":
+        session = db_session.create_session()
+        if current_user.id == 1:
+            job = session.query(Jobs).filter(Jobs.id == job_id).first()
+        else:
+            job = session.query(Jobs).filter(Jobs.id == job_id, Jobs.leader == current_user).first()
+        if job:
+            form.job.data = job.job
+            form.leader_id.data = job.leader_id
+            form.work_size.data = job.work_size
+            form.collaborators.data = job.collaborators
+            form.is_finished.data = job.is_finished
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        if current_user.id == 1:
+            job = session.query(Jobs).filter(Jobs.id == job_id).first()
+        else:
+            job = session.query(Jobs).filter(Jobs.id == job_id, Jobs.leader == current_user).first()
+        if job:
+            job.leader_id = form.leader_id.data
+            job.job = form.job.data
+            job.work_size = form.work_size.data
+            job.collaborators = form.collaborators.data
+            job.is_finished = form.is_finished.data
+            session.commit()
+            return redirect('/')
+        else:
+            abort(404)
+    return render_template('jobs_add.html', title='Редактирование работы', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
