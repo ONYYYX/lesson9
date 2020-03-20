@@ -2,26 +2,21 @@ from flask import Flask, render_template, redirect
 from db import db_session
 from data.Jobs import Jobs
 from data.User import User
-from flask_wtf import FlaskForm
-from wtforms import PasswordField, SubmitField, StringField, IntegerField
-from wtforms.validators import DataRequired, Email
+from flask_login import LoginManager
+from forms import register
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_skey_lol_lmao'
 db_session.global_init('db/blogs.sqlite')
 
+login_manager = LoginManager()
+login_manager.init_app(app)
 
-class RegisterForm(FlaskForm):
-    email = StringField('Почта', validators=[DataRequired(), Email()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
-    surname = StringField('Фамилия', validators=[DataRequired()])
-    name = StringField('Имя', validators=[DataRequired()])
-    age = IntegerField('Возраст', validators=[DataRequired()])
-    position = StringField('Должность', validators=[DataRequired()])
-    speciality = StringField('Специальность', validators=[DataRequired()])
-    address = StringField('Адрес', validators=[DataRequired()])
-    submit = SubmitField('Войти')
+
+@login_manager.user_loader
+def load_user(user_id):
+    session = db_session.create_session()
+    return session.query(User).get(user_id)
 
 
 @app.route('/')
@@ -33,7 +28,7 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegisterForm()
+    form = register.RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
