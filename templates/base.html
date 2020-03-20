@@ -10,8 +10,36 @@
           crossorigin="anonymous">
 </head>
 <body>
-    <h1>Миссия Колонизация Марса</h1>
-    <h4>И на Марсе будут яблони цвести!</h4>
+    <div class="fluid-container bg-dark mb-5">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <a class="navbar-brand" href="/">Мисиия Колонизация Марса</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Главная</a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">{{ current_user.name }}</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    {% if not current_user.is_authenticated %}
+                    <form class="form-inline mr-2">
+                        <a class="btn btn-outline-success" href="/register">Зарегистрироваться</a>
+                        <a class="btn btn-outline-secondary ml-2" href="/login">Войти</a>
+                    </form>
+                    {% endif %}
+                    <span class="navbar-text">И на Марсе будут яблони цвести!</span>
+                </div>
+            </nav>
+        </div>
+    </div>
+
     {% block content %}
     {% endblock %}
     <script

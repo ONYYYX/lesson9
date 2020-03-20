@@ -3,7 +3,7 @@ from db import db_session
 from data.Jobs import Jobs
 from data.User import User
 from flask_login import LoginManager
-from forms import register
+from forms.register import RegisterForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_skey_lol_lmao'
@@ -28,7 +28,7 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = register.RegisterForm()
+    form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
             return render_template('register.html', title='Регистрация',
