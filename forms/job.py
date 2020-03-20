@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired
 
 
 class LoginForm(FlaskForm):
-    job = StringField('Почта', validators=[DataRequired()])
+    job = StringField('Название', validators=[DataRequired()])
     leader_id = IntegerField('ID Лидера', validators=[DataRequired()])
     work_size = IntegerField('Часы на выполнение', validators=[DataRequired()])
     collaborators = StringField('Сотрудники')
