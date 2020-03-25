@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, abort
+from flask import Flask, render_template, redirect, request, abort, jsonify
 from db import db_session
 from data.Jobs import Jobs
 from data.User import User
@@ -9,13 +9,21 @@ from forms.register import RegisterForm
 from forms.login import LoginForm
 from forms.job import JobForm
 from forms.department import DepartmentForm
+import jobs_api
+from flask import make_response
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_skey_lol_lmao'
 db_session.global_init('db/blogs.sqlite')
+app.register_blueprint(jobs_api.blueprint)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 @login_manager.user_loader
