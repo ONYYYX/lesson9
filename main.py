@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, abort
 from db import db_session
 from data.Jobs import Jobs
 from data.User import User
+from data.Category import Category
 from data.Department import Department
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from forms.register import RegisterForm
@@ -42,6 +43,11 @@ def jobs_create():
         job.job = form.job.data
         job.work_size = form.work_size.data
         job.collaborators = form.collaborators.data
+        for i in map(int, form.category.data.split(',')):
+            c = session.query(Category).filter(Category.id == i).first()
+            if not c:
+                c = Category(id=i, name=f'{i}')
+            job.categories.append(c)
         job.is_finished = form.is_finished.data
         user = session.query(User).filter(User.id == job.leader_id).first()
         if user:
@@ -67,6 +73,7 @@ def jobs_edit(job_id):
             form.leader_id.data = job.leader_id
             form.work_size.data = job.work_size
             form.collaborators.data = job.collaborators
+            form.category.data = ', '.join(map(lambda x: x.name, job.categories))
             form.is_finished.data = job.is_finished
         else:
             abort(404)
@@ -81,6 +88,11 @@ def jobs_edit(job_id):
             job.job = form.job.data
             job.work_size = form.work_size.data
             job.collaborators = form.collaborators.data
+            for i in map(int, form.category.data.split(',')):
+                c = session.query(Category).filter(Category.id == i).first()
+                if not c:
+                    c = Category(id=i, name=f'{i}')
+                job.categories.append(c)
             job.is_finished = form.is_finished.data
             session.commit()
             return redirect('/')

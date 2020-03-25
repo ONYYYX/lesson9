@@ -8,5 +8,6 @@ class JobForm(FlaskForm):
     leader_id = IntegerField('ID Лидера', validators=[DataRequired()])
     work_size = IntegerField('Часы на выполнение', validators=[DataRequired()])
     collaborators = StringField('Сотрудники')
+    category = StringField('Категория')
     is_finished = BooleanField('Закончена?')
     submit = SubmitField('Добавить')

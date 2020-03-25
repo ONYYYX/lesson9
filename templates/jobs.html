@@ -18,6 +18,7 @@
                         <th scope="col">Leader</th>
                         <th scope="col">Duration</th>
                         <th scope="col">Collaborators</th>
+                        <th scope="col">Hazard Category</th>
                         <th scope="col">Finished</th>
                     </tr>
                 </thead>
@@ -27,6 +28,11 @@
                         <td>{{ item.leader.name }} {{ item.leader.surname }}</td>
                         <td>{{ item.work_size }} hours</td>
                         <td>{{ item.collaborators }}</td>
+                        <td>
+                            {% for i in item.categories %}
+                                {{ i.name }}<br>
+                            {% endfor %}
+                        </td>
                         <td>{% if item.is_finished %}Yes{% else %}No{% endif %}</td>
                     </tr>
                 </tbody>
