@@ -12,6 +12,7 @@ class Department(SqlAlchemyBase):
     )
 
     title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    members = sqlalchemy.Column(sqlalchemy.String, nullable=True)
 
     chief_id = sqlalchemy.Column(
         sqlalchemy.Integer,
@@ -26,4 +27,3 @@ class Department(SqlAlchemyBase):
     )
 
     chief = orm.relation('User')
-    members = orm.relationship('User')

@@ -34,6 +34,7 @@ class User(SqlAlchemyBase, UserMixin):
     )
 
     jobs = orm.relation('Jobs', back_populates='leader')
+    departments = orm.relation('Department', back_populates='chief')
 
     def __repr__(self):
         return f'<Colonist> {self.id} {self.surname} {self.name}'
