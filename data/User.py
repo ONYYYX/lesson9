@@ -21,6 +21,7 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     position = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     speciality = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     address = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    city_from = sqlalchemy.Column(sqlalchemy.String)
     email = sqlalchemy.Column(
         sqlalchemy.String,
         index=True,

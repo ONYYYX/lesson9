@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, render_template, redirect, request, abort, jsonify
 from db import db_session
 from data.Jobs import Jobs
@@ -10,12 +11,15 @@ from forms.login import LoginForm
 from forms.job import JobForm
 from forms.department import DepartmentForm
 import jobs_api
+import users_api
 from flask import make_response
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_skey_lol_lmao'
 db_session.global_init('db/blogs.sqlite')
+
 app.register_blueprint(jobs_api.blueprint)
+app.register_blueprint(users_api.blueprint)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -252,12 +256,48 @@ def register():
             position=form.position.data,
             speciality=form.speciality.data,
             address=form.address.data,
+            city_from=form.city_from.data,
         )
         user.set_password(form.password.data)
         session.add(user)
         session.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route('/users_show/<int:user_id>')
+def show_user_city(user_id):
+    user = requests.get(f'http://localhost:5000/api/users/{user_id}').json()
+    if 'error' in user:
+        return redirect('/')
+    user = user['user']
+    print(user)
+    p = {
+        'geocode': user['city_from'],
+        'apikey': '40d1649f-0493-4b70-98ba-98533de7710b',
+        'format': 'json',
+        'results': 1
+    }
+    response = requests.get('http://geocode-maps.yandex.ru/1.x/', params=p).json()
+    response = response['response']['GeoObjectCollection']['featureMember']
+    if not len(response):
+        return 'Город не найден'
+    response = response[0]['GeoObject']
+    coord = tuple(map(float, response['Point']['pos'].split()))
+    p = {
+        'l': 'sat',
+        'll': ','.join(map(str, coord)),
+        'z': 10
+    }
+    response = requests.get('https://static-maps.yandex.ru/1.x/', params=p)
+    with open('static/media/temp/hometown.png', 'wb') as f:
+        f.write(response.content)
+    return render_template(
+        'users_show.html',
+        title='Hometown',
+        user=user,
+        photo='/static/media/temp/hometown.png'
+    )
 
 
 def main():
