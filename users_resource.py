@@ -33,6 +33,32 @@ class UserResource(Resource):
             ))
         })
 
+    def put(self, user_id):
+        abort_if_user_not_found(user_id)
+        session = db_session.create_session()
+        if not request.json:
+            return jsonify({'error': 'Empty request'})
+        user = session.query(User).get(user_id)
+        if 'name' in request.json:
+            user.name = request.json['name']
+        if 'surname' in request.json:
+            user.surname = request.json['surname']
+        if 'age' in request.json:
+            user.age = request.json['age']
+        if 'position' in request.json:
+            user.position = request.json['position']
+        if 'speciality' in request.json:
+            user.speciality = request.json['speciality']
+        if 'address' in request.json:
+            user.address = request.json['address']
+        if 'email' in request.json:
+            user.email = request.json['email']
+        if 'city_from' in request.json:
+            user.city_from = request.json['city_from']
+        user.modified_date = datetime.datetime.now()
+        session.commit()
+        return jsonify({'success': 'OK'})
+
     def delete(self, user_id):
         abort_if_user_not_found(user_id)
         session = db_session.create_session()

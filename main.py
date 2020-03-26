@@ -12,9 +12,9 @@ from forms.job import JobForm
 from forms.department import DepartmentForm
 import jobs_api
 import users_api
-from flask import make_response
 from flask_restful import Api
 import users_resource
+import jobs_resource
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_skey_lol_lmao'
@@ -27,13 +27,11 @@ app.register_blueprint(users_api.blueprint)
 api.add_resource(users_resource.UserListResource, '/api/v2/users')
 api.add_resource(users_resource.UserResource, '/api/v2/users/<int:user_id>')
 
+api.add_resource(jobs_resource.JobListResource, '/api/v2/jobs')
+api.add_resource(jobs_resource.JobResource, '/api/v2/jobs/<int:job_id>')
+
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 @login_manager.user_loader

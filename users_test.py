@@ -1,7 +1,7 @@
 from requests import get, post, put, delete
 
 # Какой метод хотите протестить
-__method = 'delete'
+__method = 'get'
 
 
 class Tester:
@@ -9,7 +9,6 @@ class Tester:
         print(get('http://localhost:5000/api/v2/users').json())  # Correct
         print(get('http://localhost:5000/api/v2/users/1').json())  # Correct
         print(get('http://localhost:5000/api/v2/users/12').json())  # Incorrect
-        print(get('http://localhost:5000/api/v2/users/awd').json())  # Incorrect
 
     def post(self):
         print(post('http://localhost:5000/api/v2/users', json={
@@ -32,13 +31,22 @@ class Tester:
         }).json())  # Incorrect
         print(get('http://localhost:5000/api/v2/users').json())
 
+    def put(self):
+        print(put('http://localhost:5000/api/v2/users/999').json())
+        print(put('http://localhost:5000/api/v2/users/1').json())
+
+        # Correct
+        print(put('http://localhost:5000/api/v2/users/1', json={
+            'name': 'lol'
+        }).json())
+        print(get('http://localhost:5000/api/v2/users').json())
+
     def delete(self):
-        print(delete('http://localhost:5000/api/v2/users/awdd').json())  # Incorrect
         print(delete('http://localhost:5000/api/v2/users/999').json())  # Incorrect
 
         # Correct
         print(delete('http://localhost:5000/api/v2/users/1').json())
-        print(get('http://localhost:5000/api/v2/users').json())
+        print(get('http://localhost:5000/api/users').json())
 
 
 if __name__ == '__main__':
