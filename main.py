@@ -13,13 +13,19 @@ from forms.department import DepartmentForm
 import jobs_api
 import users_api
 from flask import make_response
+from flask_restful import Api
+import users_resource
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'my_skey_lol_lmao'
 db_session.global_init('db/blogs.sqlite')
+api = Api(app)
 
 app.register_blueprint(jobs_api.blueprint)
 app.register_blueprint(users_api.blueprint)
+
+api.add_resource(users_resource.UserListResource, '/api/v2/users')
+api.add_resource(users_resource.UserResource, '/api/v2/users/<int:user_id>')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
